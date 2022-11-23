@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http_library/http_library.dart';
+import 'package:http_library/test_data.dart';
 
 import '../models/res_model.dart';
 
@@ -22,13 +23,23 @@ class TestPageState extends State<TestPage> {
     // TODO: implement initState
     super.initState();
     httpLibrary = HttpLibrary();
-    const String token = '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';
-    //const String token = 'github_pat_11ACYEAKY01z5BZvvtscjr_JC3iJWrhpvw5Gi5I8LRFn7YnKLoNzNyaGC7BdFKBF5yLE'; //wrong token
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'bearer ${token}'
-    };
-    response = httpLibrary.sendRequest(url: 'https://api.github.com/users/mojombo', method: 'GET', headers: headers);
+
+
+
+    //check get, post, put, delete methods for status code 200
+    //response = httpLibrary.sendRequest(url: status200Url, method: 'get');
+    //response = httpLibrary.sendRequest(url: status200Url, method: 'post');
+    //response = httpLibrary.sendRequest(url: status200Url, method: 'delete');
+    //response = httpLibrary.sendRequest(url: status200Url, method: 'put');
+
+    //check get, post, put, delete methods for status code 400
+    //response = httpLibrary.sendRequest(url: status400Url, method: 'get');
+    //response = httpLibrary.sendRequest(url: status400Url, method: 'post');
+    //response = httpLibrary.sendRequest(url: status400Url, method: 'delete');
+    //response = httpLibrary.sendRequest(url: status400Url, method: 'put');
+
+    //check get method with headers to get guthub users using Github API
+    response = httpLibrary.sendRequest(url: githubUrl, method: 'GET', headers: githubHeaders);
 
   }
 
@@ -53,7 +64,7 @@ class TestPageState extends State<TestPage> {
               return Text(
                 snapshot.data?.msg ?? 'Network Error',
                 style: const TextStyle(
-                  fontSize: 18
+                  fontSize: 17
                 ),
               );
             } else if (snapshot.hasError) {
