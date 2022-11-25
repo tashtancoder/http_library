@@ -11,8 +11,16 @@
    * в янтарьном если статус 403,
    * в красном если статус 404,
    * в желтом если статус 500.
-
-
+   
+ Примечание!!!
+ В задание условие для метода sendRequest:
+ sendRequest(string url, string method, array parameters, array headers,
+ string format): void
+ 
+ В имлементации изменено как:
+ sendRequest(string url, string method, Map<> parameters, Map<> headers,
+ string format): Future<HttpResModel>
+ 
 
 Некоторые Тестовые Url адреса находятся по ссылке:
  https://documenter.getpostman.com/view/8165175/2s8YsnXGAL
