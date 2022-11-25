@@ -3,26 +3,30 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http_library/constants.dart';
+import 'package:http_library/models/http_res_model.dart';
+import 'package:http_library/models/res_code_200.dart';
+import 'package:http_library/models/res_code_400.dart';
+import 'package:http_library/models/res_code_401.dart';
+import 'package:http_library/models/res_code_403.dart';
+import 'package:http_library/models/res_code_404.dart';
+import 'package:http_library/models/res_code_500.dart';
 
-import 'models/res_model.dart';
 class HttpLibrary {
   late final HttpClient _client;
   late final HttpClientRequest _httpRequest;
   late final HttpClientResponse _httpResponse;
-  late ResModel _response;
   HttpLibrary(){
     _client = HttpClient();
   }
 
-  Future <ResModel> sendRequest({
+  Future <HttpResModel> sendRequest({
     required String url,
     required String method,
     Map<String, dynamic>? parameters,
     Map<String, String>? headers,
     String format = 'json'
   }) async {
-    //response = ResModel(statusCode: 500, msg: 'Произошла неизвестная ошибка');
+
     method = method.toUpperCase();
     switch (method) {
       case 'GET': {
@@ -43,25 +47,42 @@ class HttpLibrary {
       }
       break;
       default: {
-        _response = ResModel(statusCode: 500, msg: 'Не известный метод');
+        throw Exception('Incorrect Method');
       }
     }
-    if (_httpRequest != null) {
-      if (headers != null) {
-        _addHeaders(headers);
-      }
-      try {
-        _httpResponse = await _httpRequest.close();
-        print(_httpResponse.statusCode);
-        final content = await utf8.decodeStream(_httpResponse);
-        print(content);
-        _response = ResModel(statusCode: _httpResponse.statusCode, msg: errorMsgs[_httpResponse.statusCode] ?? 'Произошла неизвестная ошибка');
-      } catch (error) {
-        print(error);
-        _response = ResModel(statusCode: 500, msg: 'Произошла неизвестная ошибка');
-      }
+    if (headers != null) {
+      _addHeaders(headers);
     }
-    return _response;
+
+    _httpRequest.headers.contentType = ContentType('application', format, charset: 'utf-8');
+
+    if (parameters != null){
+      print(parameters);
+      _httpRequest.write(parameters);
+    }
+    try {
+      _httpResponse = await _httpRequest.close();
+      print(_httpResponse.statusCode);
+      final content = await utf8.decodeStream(_httpResponse);
+      print(content);
+      switch (_httpResponse.statusCode) {
+        case 200:
+          return ResCode200();
+        case 400:
+          return ResCode400();
+        case 401:
+          return ResCode401();
+        case 403:
+          return ResCode403();
+        case 404:
+          return ResCode404();
+        default:
+          return ResCode500();
+      }
+    } catch (error) {
+      print(error);
+      return ResCode500();
+    }
   }
 
   _addHeaders(Map<String, String> headers){
