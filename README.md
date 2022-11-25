@@ -19,7 +19,7 @@
  
  В имлементации изменено как:
  sendRequest(string url, string method, Map<> parameters, Map<> headers,
- string format): Future<HttpResModel>
+ string format): HttpResModel
  
 
 Некоторые Тестовые Url адреса находятся по ссылке:
